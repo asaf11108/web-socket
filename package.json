@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "ws:server": "node ./server.ts"
   },
   "private": true,
   "dependencies": {
@@ -20,6 +21,7 @@
     "@angular/router": "^16.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "ws": "^8.13.0",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

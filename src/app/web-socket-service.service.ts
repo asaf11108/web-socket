@@ -15,7 +15,7 @@ export class WebSocketServiceService {
 
   public connect(): void {
     if (!this.socket$ || this.socket$.closed) {
-      this.socket$ = webSocket( 'ws://localhost:8000');
+      this.socket$ = webSocket({ url: 'ws://localhost:3001' });
 
       this.socket$.subscribe((data: MessageData) => {
         this.receivedData.push(data);
