@@ -18,7 +18,7 @@ interface EndpointRegexp {
     regexp: RegExp;
 }
 
-export type ClientWSCallback = (endpoint: Endpoint, sendMessage: (json: JSON) => void) => void;
+export type ClientWSCallback = (endpoint: Endpoint) => void;
 
 export interface ClientWSDispatcher {
     endpoint: EndpointRegexp;
@@ -27,8 +27,6 @@ export interface ClientWSDispatcher {
 
 export class ClientWS {
     private dispatchers: ClientWSDispatcher[] = [];
-
-    constructor(private sendMessage: (json: JSON) => void) {}
 
     post({ method, path }: EndpointPath, callback: ClientWSCallback) {
         this.dispatchers.push({ endpoint: { method, regexp: pathToRegexp(path)}, callback });
@@ -39,6 +37,6 @@ export class ClientWS {
             endpoint.method === method && regexp.test(endpoint.url)
         )
         if (dispatcher)
-            dispatcher.callback(endpoint, this.sendMessage);
+            dispatcher.callback(endpoint);
     }
 }

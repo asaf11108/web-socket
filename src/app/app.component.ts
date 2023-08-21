@@ -20,7 +20,10 @@ export class AppComponent implements OnDestroy {
       method: 'POST',
       path: '/api/users/:id'
     };
-    this.webSocketService.clientApp.post(endpointPath, () => console.log('registerPost'));
+    this.webSocketService.clientApp.post(endpointPath, (endpoint) => {
+      console.log('registerPost: ', endpoint);
+      this.webSocketService.sendMessage({ status: 200 });
+    });
   }
 
   ngOnDestroy() {
