@@ -8,7 +8,7 @@ wss.on('error', console.error);
 wss.on('connection', function open(ws) {
 
   ws.on('message', function message(data) {
-    console.log('received: ', data);
+    console.log('received: ', data.toString());
   });
 
   setTimeout(() => test(ws), 5000);
