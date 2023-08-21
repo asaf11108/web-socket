@@ -1,31 +1,42 @@
+import { pathToRegexp } from "path-to-regexp";
+
+type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export interface Endpoint {
-    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    method: Method;
     url: string;
     payload?: JSON;
 }
 
-export type _Endpoint = Omit<Endpoint, 'payload'>;
+export interface EndpointPath {
+    method: Method;
+    path: string;
+}
 
-export type ClientWSCallback = (endpoint: Endpoint, sendMessage: (message: string) => void) => void;
+interface EndpointRegexp {
+    method: Method;
+    regexp: RegExp;
+}
+
+export type ClientWSCallback = (endpoint: Endpoint, sendMessage: (json: JSON) => void) => void;
 
 export interface ClientWSDispatcher {
-    endpoint: _Endpoint;
+    endpoint: EndpointRegexp;
     callback: ClientWSCallback;
 }
 
 export class ClientWS {
-    dispatchers: ClientWSDispatcher[] = [];
+    private dispatchers: ClientWSDispatcher[] = [];
 
-    constructor(private sendMessage: (message: string) => void) {}
+    constructor(private sendMessage: (json: JSON) => void) {}
 
-    post(endpoint: _Endpoint, callback: ClientWSCallback) {
-        this.dispatchers.push({ endpoint, callback });
+    post({ method, path }: EndpointPath, callback: ClientWSCallback) {
+        this.dispatchers.push({ endpoint: { method, regexp: pathToRegexp(path)}, callback });
     }
 
     dispatch(endpoint: Endpoint) {
-        const dispatcher = this.dispatchers.find(({ endpoint: {method, url} }) => 
-            endpoint.method === method && endpoint.url === url
+        const dispatcher = this.dispatchers.find(({ endpoint: {method, regexp} }) => 
+            endpoint.method === method && regexp.test(endpoint.url)
         )
         if (dispatcher)
             dispatcher.callback(endpoint, this.sendMessage);
