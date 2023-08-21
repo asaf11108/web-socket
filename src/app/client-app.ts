@@ -8,11 +8,6 @@ export interface Endpoint {
     payload?: JSON;
 }
 
-export interface EndpointPath {
-    method: Method;
-    path: string;
-}
-
 interface EndpointRegexp {
     method: Method;
     regexp: RegExp;
@@ -28,15 +23,19 @@ export interface ClientWSDispatcher {
 export class ClientWS {
     private dispatchers: ClientWSDispatcher[] = [];
 
-    post({ method, path }: EndpointPath, callback: ClientWSCallback) {
-        this.dispatchers.push({ endpoint: { method, regexp: pathToRegexp(path)}, callback });
+    post(path: string, callback: ClientWSCallback) {
+        this.registerRoute('POST', path, callback);
     }
-
+    
     dispatch(endpoint: Endpoint) {
         const dispatcher = this.dispatchers.find(({ endpoint: {method, regexp} }) => 
             endpoint.method === method && regexp.test(endpoint.url)
         )
         if (dispatcher)
             dispatcher.callback(endpoint);
+    }
+
+    private registerRoute(method: Method, path: string, callback: ClientWSCallback) {
+        this.dispatchers.push({ endpoint: { method, regexp: pathToRegexp(path)}, callback });
     }
 }

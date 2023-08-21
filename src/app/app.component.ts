@@ -1,4 +1,3 @@
-import { EndpointPath } from './client-app';
 import { Component, OnDestroy } from '@angular/core';
 import { WebSocketServiceService } from './web-socket-service.service';
 
@@ -16,11 +15,7 @@ export class AppComponent implements OnDestroy {
   }
 
   registerPost() {
-    const endpointPath: EndpointPath = {
-      method: 'POST',
-      path: '/api/users/:id'
-    };
-    this.webSocketService.clientApp.post(endpointPath, (endpoint) => {
+    this.webSocketService.clientApp.post('/api/users/:id', (endpoint) => {
       console.log('registerPost: ', endpoint);
       this.webSocketService.sendMessage({ status: 200 });
     });
