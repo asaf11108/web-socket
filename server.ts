@@ -17,7 +17,7 @@ wss.on('connection', function open(ws) {
 function test(ws: WebSocket) {
   const endpoint: Endpoint = {
     method: 'POST',
-    url: '/api/users/1'
+    url: '/api/users/1?prop=a&my=b'
   };
   ws.send(JSON.stringify(endpoint));
 }
